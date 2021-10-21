@@ -1,0 +1,20 @@
+<div class="card text-center">
+	<img src="../../../../assets/images/faces-clipart/user-picture.jpg" class="card-img-top" alt="profile" style="max-height: 20vw" />
+	<div class="card-body" style="font-family: 'Poppins'">
+		<h5 style="font-size: 1.25rem" class="card-title">{{ user.name }} {{ user.lastName }}</h5>
+
+		<div *ngIf="user.haveBrothers; else noBrothers"><i class="fas fa-user-friends"></i> Tiene hermanos <br /></div>
+		<ng-template #noBrothers> <i class="fas fa-user"></i> No tiene hermanos <br /> </ng-template>
+
+		<div *ngIf="!user.status; else isMarried"><i class="fas fa-child"></i> Soltero <br /></div>
+		<ng-template #isMarried> <i class="fas fa-hands-helping"></i> Casado </ng-template>
+
+		<p class="card-text">
+			<small class="text-muted"><i class="fas fa-calendar-alt"></i> {{ user.birthDate }}</small>
+		</p>
+		<button type="button" class="btn btn-outline-info mr-1"><i class="fas fa-eye" title="Ver usuario"></i></button>
+		<button type="button" class="btn btn-outline-danger" (click)="deleteUser(user.userId)">
+			<i class="fas fa-trash-alt" title="Eliminar usuario"></i>
+		</button>
+	</div>
+</div>
