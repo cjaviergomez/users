@@ -27,7 +27,7 @@
 		<div class="row">
 			<ng-container *ngFor="let user of users">
 				<div class="col-3">
-					<app-user-tarjeta [user]="user"></app-user-tarjeta>
+					<app-user-tarjeta [user]="user" (view)="viewUser($event)"></app-user-tarjeta>
 				</div>
 			</ng-container>
 		</div>
@@ -56,14 +56,16 @@
 	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Crear Usuario</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" (click)="formInformacion.reset()">
+				<h5 class="modal-title" id="exampleModalLabel" *ngIf="userSelected; else createUserTitle">Edit Usuario</h5>
+				<ng-template #createUserTitle> Crear Usuario </ng-template>
+
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form [formGroup]="formInformacion">
-					<div class="form-group">
+				<form [formGroup]="formInformacion" class="row">
+					<div class="form-group text-center">
 						<img
 							*ngIf="urlImage | async; else imgUsuario"
 							src="{{ urlImage | async }}"
@@ -73,57 +75,39 @@
 						/>
 						<ng-template #imgUsuario>
 							<img
-								src="../../../../assets/images/faces-clipart/user-picture.jpg"
+								src="{{ formInformacion.value.photo | photo }}"
 								class="rounded-circle img-thumbnail"
 								alt="profile"
 								style="max-width: 40%; max-height: 300px"
 							/>
 						</ng-template>
 
-						<div class="container">
-							<div class="input-group mt-3">
-								<div class="custom-file">
-									<input
-										type="file"
-										class="custom-file-input"
-										id="inputGroupFile04"
-										accept=".png, .jpg"
-										(change)="onUpload($event)"
-										aria-describedby="inputGroupFileAddon04"
-									/>
-									<label *ngIf="nameImageUp" class="custom-file-label" for="inputGroupFile04" data-browse="Elegir">{{ nameImageUp }}</label>
-									<label *ngIf="!nameImageUp" class="custom-file-label" for="inputGroupFile04" data-browse="Elegir">Elija una imagen</label>
-								</div>
-								<div class="input-group-append">
-									<button
-										*ngIf="urlImage | async; else btnDisabled"
-										class="btn btn-outline-secondary"
-										type="button"
-										id="inputGroupFileAddon04"
-										(click)="cambiarImagen()"
-									>
-										Guardar
-									</button>
-									<ng-template #btnDisabled>
-										<button class="btn btn-outline-secondary btn-block" type="button" id="inputGroupFileAddon04" disabled="true">
-											Guardar
-										</button>
-									</ng-template>
-								</div>
+						<div class="input-group mt-3">
+							<div class="custom-file">
+								<input
+									type="file"
+									class="custom-file-input"
+									id="inputGroupFile04"
+									accept=".png, .jpg"
+									(change)="onUpload($event)"
+									aria-describedby="inputGroupFileAddon04"
+								/>
+								<label *ngIf="nameImageUp" class="custom-file-label" for="inputGroupFile04" data-browse="Elegir">{{ nameImageUp }}</label>
+								<label *ngIf="!nameImageUp" class="custom-file-label" for="inputGroupFile04" data-browse="Elegir">Elija una imagen</label>
 							</div>
+						</div>
 
-							<div *ngIf="nameImageUp" class="progress">
-								<div class="progress-bar progress-bar-striped bg-primary" role="progressbar" [style.width]="(uploadPercent | async) + '%'">
-									{{ uploadPercent | async | number: '1.0-0' }}%
-								</div>
+						<div *ngIf="nameImageUp" class="progress">
+							<div class="progress-bar progress-bar-striped bg-primary" role="progressbar" [style.width]="(uploadPercent | async) + '%'">
+								{{ uploadPercent | async | number: '1.0-0' }}%
 							</div>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="form-group col-6">
 						<label for="recipient-name" class="col-form-label">Nombre</label>
 						<input type="text" class="form-control" id="recipient-name" formControlName="name" />
 					</div>
-					<div class="form-group">
+					<div class="form-group col-6">
 						<label for="message-text" class="col-form-label">Apellido</label>
 						<input type="text" class="form-control" id="recipient-name" formControlName="lastName" />
 					</div>
@@ -134,7 +118,7 @@
 							<option value="1">Casado</option>
 						</select>
 					</div>
-					<div class="form-group">
+					<div class="form-group col-6">
 						<label class="form-label">Tiene hermanos</label><br />
 						<div class="form-check form-check-inline">
 							<input
@@ -159,15 +143,17 @@
 							<label class="form-check-label" for="inlineRadio2">No</label>
 						</div>
 					</div>
-					<div class="form-group">
+					<div class="form-group col-6">
 						<label for="date" class="form-label">Fecha de nacimiento</label> <br />
 						<input type="date" id="date" name="trip-start" formControlName="birthDate" />
 					</div>
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="formInformacion.reset()">Cancelar</button>
-				<button type="submit" class="btn btn-primary" (click)="saveUser()">Guardar</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeModal()">Cancelar</button>
+				<button type="submit" class="btn btn-primary" data-bs-dismiss="modal" (click)="saveUser()" [disabled]="formInformacion.invalid">
+					Guardar
+				</button>
 			</div>
 		</div>
 	</div>

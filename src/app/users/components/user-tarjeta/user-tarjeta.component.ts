@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import Swal from 'sweetalert2';
 
@@ -15,6 +15,7 @@ import { UsersService } from '../../services/users.service';
 })
 export class UserTarjetaComponent implements OnInit {
 	@Input() user: User;
+	@Output() view = new EventEmitter<User>();
 
 	constructor(private usersService: UsersService) {}
 
@@ -50,5 +51,9 @@ export class UserTarjetaComponent implements OnInit {
 				});
 			}
 		});
+	}
+
+	emitUser(user: User): void {
+		this.view.emit(user);
 	}
 }

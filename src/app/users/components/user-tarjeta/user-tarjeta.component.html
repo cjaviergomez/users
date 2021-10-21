@@ -1,5 +1,5 @@
 <div class="card text-center">
-	<img src="../../../../assets/images/faces-clipart/user-picture.jpg" class="card-img-top" alt="profile" style="max-height: 20vw" />
+	<img src="{{ user.photo | photo }}" class="card-img-top" alt="profile" style="max-height: 20vw; max-width: 100%" />
 	<div class="card-body" style="font-family: 'Poppins'">
 		<h5 style="font-size: 1.25rem" class="card-title">{{ user.name }} {{ user.lastName }}</h5>
 
@@ -12,7 +12,9 @@
 		<p class="card-text">
 			<small class="text-muted"><i class="fas fa-calendar-alt"></i> {{ user.birthDate }}</small>
 		</p>
-		<button type="button" class="btn btn-outline-info mr-1"><i class="fas fa-eye" title="Ver usuario"></i></button>
+		<button type="button" class="btn btn-outline-info mr-1" (click)="emitUser(user)">
+			<i class="fas fa-eye" title="Ver usuario"></i>
+		</button>
 		<button type="button" class="btn btn-outline-danger" (click)="deleteUser(user.userId)">
 			<i class="fas fa-trash-alt" title="Eliminar usuario"></i>
 		</button>

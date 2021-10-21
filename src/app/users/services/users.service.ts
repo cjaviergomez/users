@@ -89,4 +89,21 @@ export class UsersService {
 		this.userDoc = this.afs.doc<User>(`users/${id}`);
 		return this.userDoc.delete();
 	}
+
+	/**
+	 * Método para obtener usuarios que cumplen con un filtro
+	 * @param filter filtro a aplicar
+	 */
+	getUsersByFilter(filter: string): Observable<User[]> {
+		this.usersCollection = this.afs.collection<User>('users', (ref) => ref.where('name', '==', filter));
+		return (this.users = this.usersCollection.snapshotChanges().pipe(
+			map((changes) => {
+				return changes.map((action) => {
+					const data = action.payload.doc.data() as User;
+					data.userId = action.payload.doc.id;
+					return data;
+				});
+			})
+		));
+	}
 }
